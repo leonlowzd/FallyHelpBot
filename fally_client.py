@@ -4,6 +4,31 @@ from tensorflow import keras
 import pandas as pd
 import numpy as np
 import time
+#import schedule
+import requests
+
+
+def telegram_bot_sendtext(bot_message):
+
+    bot_token = '5011504726:AAEx98q7iS00QsglPhk-vSPIHni11CAhfao'
+    bot_chatID = '689229292'
+    sender_ID = '43690748'
+
+    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+
+    response = requests.get(send_text)
+
+    return response.json()
+
+
+def report():
+    #my_balance = 10   ## Replace this number with an API call to fetch your account balance
+    my_message = "Fall has been detected"   ## Customize your message
+    telegram_bot_sendtext(my_message)
+
+
+#schedule.every().day.at("12:00").do(report)
+
 
 WINDOW_SIZE = 4
 SLIDING_WINDOW = 1
@@ -34,7 +59,6 @@ arduino.reset_output_buffer()
 arduino.flush()
 count = 0
 while(1):
-    count +=1
     output_x = []
     start = time.time()
     for i in range(WINDOW_SIZE):
@@ -47,8 +71,11 @@ while(1):
     data = np.array([output_x])
     output = np.argmax(loaded_model.predict(data), axis=-1)
     print(output)
-    # end = time.time()
-    # if(count==5):
-    #     print(data)
-    #     count = 0
-    # print(str(end - start)+"s : "+str(move_mapping(output)))
+    if (output == 0) :
+        report()
+        time.sleep(20)
+        arduino.reset_input_buffer()
+        arduino.reset_output_buffer()
+        arduino.flush()
+    else:
+        count = 0
