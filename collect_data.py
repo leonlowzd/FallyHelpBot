@@ -16,8 +16,16 @@ TIME = 90
 
 WINDOW_SIZE = 10
 SLIDING_WINDOW = 1
-NO_OF_CLASSES = 9
 ARRAY_SIZE = 6
+
+# beetleMAC = ['2C:AB:33:CC:5E:71', 'B0:B1:13:2D:B3:00']
+
+# def initSetup(BEETLEMAC, beetleIndex):
+#     beetle = btle.Peripheral(BEETLEMAC)
+#     beetle_delegate = Delegate(BEETLEMAC, beetleIndex)
+#     beetle.withDelegate(beetle_delegate)
+#     return beetle
+
 
 def positionCalibration(arduino):
     count = 0
@@ -123,10 +131,10 @@ def get_arguments():
 
 def move_mapping_str_to_int(result):
     result = result.lower()
-    if result == 'forward': move = 0
-    elif result == 'right': move = 1
-    elif result == 'left': move = 2
-    elif result == 'reverse': move = 3
+    if result == 'fall': move = 0
+    elif result == 'normal': move = 1
+    elif result == 'fall2': move = 2
+    elif result == 'fall1': move = 3
     # if result == 'dab': move = 0
     # elif result == 'james_bond': move = 1
     # elif result =='mermaid': move = 2
@@ -150,7 +158,8 @@ def read_set(arduino):
 
 
 args = get_arguments()
-count  = 0
+# count  = 0
+# arduino = initSetup(beetleMac, index)
 arduino = serial.Serial(port=args.port, baudrate=115200, timeout=100)
 arduino.reset_input_buffer()
 arduino.reset_output_buffer()
@@ -179,6 +188,7 @@ while(1):
         arduino.flush()
         start = time.time()
         print("START!")
+        count = 0
         while(1):
             output = []
             dataset = []
